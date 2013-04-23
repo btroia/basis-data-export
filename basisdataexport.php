@@ -168,7 +168,7 @@ echo '<td>' . $result['metrics']['heartrate']['summary']['min_heartrate_per_minu
 echo '</tr>';
 
 // Steps data summary
-echo '<tr><td><strong>Heart Rate</strong><br />';
+echo '<tr><td><strong>Steps</strong><br />';
 echo '<td>' . $result['metrics']['steps']['min'] . '</td>';
 echo '<td>' . $result['metrics']['steps']['max'] . '</td>';
 echo '<td>' . $result['metrics']['steps']['sum'] . '</td>';
