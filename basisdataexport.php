@@ -16,7 +16,7 @@
 ////////////////////////////////////
 
 // Specify your Basis user id
-$basis_userid = '[ ADD YOUR BASIS USER ID HERE ]';
+$basis_userid = 'ADD YOUR BASIS USER ID HERE';
 
 // Debug flag
 $debug = false;
