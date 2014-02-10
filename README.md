@@ -9,19 +9,19 @@ You can learn more about Basis at [http://www.mybasis.com/](http://www.mybasis.c
 - Log into your Basis account at [http://www.mybasis.com](http://gist.github.com).
 - Right-click and access your web browser's developer tools by selecting "Inspect Element" (on Chrome - you can also access this by going to the "View->Developer->Developer Tools" menu):
 
-![basis export step 1](http://www.quantifiedbob.com/2013/basis-screenshots/export1.png)
+![basis export step 1](http://www.quantifiedbob.com/images/basis-screenshots/export1.png)
 
 - You should now see the Developer Tools pane:
 
-![basis export step 2](http://www.quantifiedbob.com/2013/basis-screenshots/export2.png)
+![basis export step 2](http://www.quantifiedbob.com/images/basis-screenshots/export2.png)
 
 - Go to the "Data" menu and select "Details":
 
-![basis export step 3](http://www.quantifiedbob.com/2013/basis-screenshots/export3.png) 
+![basis export step 3](http://www.quantifiedbob.com/images/basis-screenshots/export3.png) 
 
 - Click on the "Network" tab in the Developer Tools frame and reload the page:
 
-![basis export step 4](http://www.quantifiedbob.com/2013/basis-screenshots/export4.png)
+![basis export step 4](http://www.quantifiedbob.com/images/basis-screenshots/export4.png)
 
 Scroll down the list of network requests and look for a request that beings with:
 "https://app.mybasis.com/api/v1/chart/123a4567b89012345678d9e.json?summary=true..."
@@ -34,13 +34,13 @@ The letters after "...chart/" and preceding ".json?..." are your Basis user id! 
 - Run the script from an executable location. The easiest way is to place it under your webserver document root, but CURL also works.
 - By default, the script will export data from the previous day. You can specify the date you would like to export by appending "?date=YYYY-MM-DD" to the script URL (change YYYY-MM-DD to the actual date you would like to export)
 
-![basis export step 5a](http://www.quantifiedbob.com/2013/basis-screenshots/export5a.png)
+![basis export step 5a](http://www.quantifiedbob.com/images/basis-screenshots/export5a.png)
 
-![basis export step 5b](http://www.quantifiedbob.com/2013/basis-screenshots/export5b.png)
+![basis export step 5b](http://www.quantifiedbob.com/images/basis-screenshots/export5b.png)
 
 - Your data will be saved in JSON format in the "data/" folder in the format "basis-data-YYYY-MM-DD.json"
 
-![basis export step 6](http://www.quantifiedbob.com/2013/basis-screenshots/export6.png)
+![basis export step 6](http://www.quantifiedbob.com/images/basis-screenshots/export6.png)
 
 - That's it! (for now).
 
