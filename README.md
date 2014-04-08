@@ -28,6 +28,9 @@ Scroll down the list of network requests and look for a request that beings with
 
 The letters after "...chart/" and preceding ".json?..." are your Basis user id! Note this string.
 
+### Finding Your Basis access_token
+In the same developer tools screen, click on the "Resources" tab. On the left hand side, click the arrow next to "Cookies", and then click "app.mybasis.com". In the table on the right, there will be an entry in the first column called "access_token". The value in the second column is your access token.
+
 ### Exporting Your Basis Data to Your Computer
 
 - Set the $basis_userid variable in the script to your Basis user id from the previous step.
