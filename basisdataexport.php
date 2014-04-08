@@ -17,6 +17,7 @@
 
 // Specify your Basis user id
 $basis_userid = '[ ADD YOUR BASIS USER ID HERE ]';
+$access_token = '[ ADD YOUR BASIS ACCESS_TOKEN HERE]';
 
 // Debug flag
 $debug = false;
@@ -67,8 +68,18 @@ $dataurl = 'https://app.mybasis.com/api/v1/chart/' . $basis_userid . '.json?'
          . '&skin_temp=true'
          . '&air_temp=true'
          . '&bodystates=true';
+         
+ $opts = array(
+	'http'=>array(
+		'method'=>"GET",
+		'header'=>"Accept-Language: en\r\n" .
+					"Cookie: access_token=" . $access_token . "\r\n"
+		)
+	);
 
-if(!$basisdata = file_get_contents($dataurl)) {
+$context = stream_context_create($opts);
+
+if(!$basisdata = file_get_contents($dataurl,false,$context)) {
 	if ($debug) {
 	    echo 'Error retrieving data: ' . $dataurl;
     }
