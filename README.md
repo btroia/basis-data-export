@@ -5,44 +5,41 @@ You can learn more about Basis at [http://www.mybasis.com/](http://www.mybasis.c
 
 ## Instructions
 
-### Finding Your Basis User ID
-- Log into your Basis account at [http://www.mybasis.com](http://gist.github.com).
-- Right-click and access your web browser's developer tools by selecting "Inspect Element" (on Chrome - you can also access this by going to the "View->Developer->Developer Tools" menu):
+In order to use this script, you must already have a Basis account.
 
-![basis export step 1](http://www.quantifiedbob.com/images/basis-screenshots/export1.png)
+### Usage:
+This script can be run several ways. You can (and should probably) edit the BASIS_USERNAME, BASIS_PASSWORD, and BASIS_EXPORT_FORMAT values under "Settings" in `basisdataexport.php` so you don't have to specify those values every time the script is run. Make sure the data/ folder is writeable!
 
-- You should now see the Developer Tools pane:
+### Method 1 - Interactive Mode
 
-![basis export step 2](http://www.quantifiedbob.com/images/basis-screenshots/export2.png)
+![basis export step 1](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-1.png)
 
-- Go to the "Data" menu and select "Details":
+1. Open a terminal window and cd to this script's directory.
+2. Type `php basisdataexport.php`
+3. Follow the prompts (hit ENTER to use default values)
+4. Your data will be save to /data/basis-data-[YYYY-MM-DD].[format]';
 
-![basis export step 3](http://www.quantifiedbob.com/images/basis-screenshots/export3.png) 
 
-- Click on the "Network" tab in the Developer Tools frame and reload the page:
+### Method 2 - Via command-line arguments (useful for crons)
+Usage `php basisdataexport.php -h -u[username] -p[pass] -d[YYYY-MM-DD] -f[json|csv|html]`
+```
+Options:
+  -u  Basis username (if not used, defaults to BASIS_USERNAME)
+  -p  Basis password (if not used, defaults to BASIS_PASSWORD)
+  -d  Data export date (YYYY-MM-DD) (if not used, defaults to current date)
+  -f  Data export format (json|csv|html) (if not used, defaults to json)
+  -h  Show this help text
 
-![basis export step 4](http://www.quantifiedbob.com/images/basis-screenshots/export4.png)
+### Method 3 - Via web browser
+This requires that the scripts are in a location that is executable via a web server.
 
-Scroll down the list of network requests and look for a request that beings with:
-"https://app.mybasis.com/api/v1/chart/123a4567b89012345678d9e.json?summary=true..."
+`http://localhost/basis-data-export/basisdataexport.php?u=[basis_username]&p=[basis_password]&d=[YYYY-MM-DD]&f=[format]`
 
-The letters after "...chart/" and preceding ".json?..." are your Basis user id! Note this string.
+## Finding Your Data
+If the script runs successfully, your data will be saved in the `data\` folder. Files are saved in the format `basis-data-[YYYY-MM-DD].[format]` (i.e., `basis-data-2014-04-04.json`).
 
-### Exporting Your Basis Data to Your Computer
+That's it! (for now).
 
-- Set the $basis_userid variable in the script to your Basis user id from the previous step.
-- Run the script from an executable location. The easiest way is to place it under your webserver document root, but CURL also works.
-- By default, the script will export data from the previous day. You can specify the date you would like to export by appending "?date=YYYY-MM-DD" to the script URL (change YYYY-MM-DD to the actual date you would like to export)
-
-![basis export step 5a](http://www.quantifiedbob.com/images/basis-screenshots/export5a.png)
-
-![basis export step 5b](http://www.quantifiedbob.com/images/basis-screenshots/export5b.png)
-
-- Your data will be saved in JSON format in the "data/" folder in the format "basis-data-YYYY-MM-DD.json"
-
-![basis export step 6](http://www.quantifiedbob.com/images/basis-screenshots/export6.png)
-
-- That's it! (for now).
 
 ## Data Values
 
@@ -62,7 +59,7 @@ There are some other aggregate metrics included in the reponse such as min/max/a
 - You can set up a cron to run once per day to automatically grab your previous day's data (assuming you are syncing your device each day)
 - If you want to archive data across a date range you can use curl's [ ] syntax to do it easily (thanks to [@Edrabbit](http://twitter.com/edrabbit) for the tip!). For example, to get all of May cached in /data:
 
-  `curl http://localhost/basisdataexport.php?date=2013-05-[01-31]`
+  `curl http://localhost/basis-data-export/basisdataexport.php?date=2013-05-[01-31]`
 
 
 
