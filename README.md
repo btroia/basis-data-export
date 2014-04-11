@@ -5,10 +5,10 @@ You can learn more about Basis at [http://www.mybasis.com/](http://www.mybasis.c
 
 ## Instructions
 
-In order to use this script, you must already have a Basis account.
+In order to use this script, you must already have a Basis account (and a Basis B1 band).
 
 ### Usage:
-This script can be run several ways. You can (and should probably) edit the BASIS_USERNAME, BASIS_PASSWORD, and BASIS_EXPORT_FORMAT values under "Settings" in `basisdataexport.php` so you don't have to specify those values every time the script is run. Make sure the data/ folder is writeable!
+This script can be run several ways. You can (and should probably) edit the `BASIS_USERNAME`, `BASIS_PASSWORD`, and `BASIS_EXPORT_FORMAT` values under "Settings" in `basisdataexport.php` so you don't have to specify those values every time the script is run. Make sure the `data/` folder is writeable!
 
 ### Method 1 - Interactive Mode
 
@@ -17,7 +17,7 @@ This script can be run several ways. You can (and should probably) edit the BASI
 1. Open a terminal window and cd to this script's directory.
 2. Type `php basisdataexport.php`
 3. Follow the prompts (hit ENTER to use default values)
-4. Your data will be save to /data/basis-data-[YYYY-MM-DD].[format]';
+4. Your data will be saved to `/data/basis-data-[YYYY-MM-DD].[format]`;
 
 
 ### Method 2 - Via command-line arguments (useful for crons)
