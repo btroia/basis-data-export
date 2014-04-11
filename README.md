@@ -29,6 +29,7 @@ Options:
   -d  Data export date (YYYY-MM-DD) (if not used, defaults to current date)
   -f  Data export format (json|csv|html) (if not used, defaults to json)
   -h  Show this help text
+```
 
 ### Method 3 - Via web browser
 This requires that the scripts are in a location that is executable via a web server.
