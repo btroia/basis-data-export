@@ -10,9 +10,11 @@ In order to use this script, you must already have a Basis account (and a Basis 
 ### Usage:
 This script can be run several ways. You can (and should probably) edit the `BASIS_USERNAME`, `BASIS_PASSWORD`, and `BASIS_EXPORT_FORMAT` values under "Settings" in `basisdataexport.php` so you don't have to specify those values every time the script is run. Make sure the `data/` folder is writeable!
 
+![basis export config](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-config.png)
+
 ### Method 1 - Interactive Mode
 
-![basis export step 1](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-1.png)
+![basis export option 1](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-1.png)
 
 1. Open a terminal window and cd to this script's directory.
 2. Type `php basisdataexport.php`
@@ -21,6 +23,9 @@ This script can be run several ways. You can (and should probably) edit the `BAS
 
 
 ### Method 2 - Via command-line arguments (useful for crons)
+
+![basis export option 2](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-2.png)
+
 Usage `php basisdataexport.php -h -u[username] -p[pass] -d[YYYY-MM-DD] -f[json|csv|html]`
 ```
 Options:
