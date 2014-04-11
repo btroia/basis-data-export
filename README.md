@@ -19,7 +19,7 @@ This script can be run several ways. You can (and should probably) edit the `BAS
 1. Open a terminal window and cd to this script's directory.
 2. Type `php basisdataexport.php`
 3. Follow the prompts (hit ENTER to use default values)
-4. Your data will be saved to `/data/basis-data-[YYYY-MM-DD].[format]`;
+4. Your data will be saved to `/data/basis-data-[YYYY-MM-DD].[format]`
 
 
 ### Method 2 - Via command-line arguments (useful for crons)
@@ -41,8 +41,8 @@ This requires that the scripts are in a location that is executable via a web se
 
 `http://localhost/basis-data-export/basisdataexport.php?u=[basis_username]&p=[basis_password]&d=[YYYY-MM-DD]&f=[format]`
 
-## Finding Your Data
-If the script runs successfully, your data will be saved in the `data\` folder. Files are saved in the format `basis-data-[YYYY-MM-DD].[format]` (i.e., `basis-data-2014-04-04.json`).
+## Saving Your Data
+If the script runs successfully, your data will be saved in the `./data` folder. Files are saved in the format `basis-data-[YYYY-MM-DD].[format]` (i.e., `basis-data-2014-04-04.json`).
 
 That's it! (for now).
 
