@@ -36,7 +36,7 @@
  *
  *  
 */
-require('./BasisExport.class.php');
+require_once(dirname(__FILE__) . '/BasisExport.class.php'); 
 
 ///////////////////////////////////////////////////////
 // Settings
