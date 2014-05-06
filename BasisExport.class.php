@@ -76,13 +76,14 @@ class BasisExport
             CURLOPT_COOKIEJAR => $this->cookie_jar
         ));
         $result = curl_exec($ch);
-        curl_close($ch);
 
         if($result === false) {
             // A cURL error occurred
             throw new Exception('ERROR: cURL error - ' . curl_error($ch) . "\n");
             return false;
         }
+
+        curl_close($ch);
 
         // Make sure login was successful and save access_token cookie for api requests.
         preg_match('/^Set-Cookie:\s*([^;]*)/mi', $result, $m);
@@ -166,12 +167,13 @@ class BasisExport
         ));
         $result = curl_exec($ch);
         $response_code = curl_getinfo ($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
         if ($response_code == '401') {
             throw new Exception("ERROR: Unauthorized!\n");
             return false;
         }
+
+        curl_close($ch);
 
         // Parse data from JSON response
         $json = json_decode($result, true);

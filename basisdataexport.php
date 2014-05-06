@@ -90,10 +90,10 @@ function runCommandLine()
 {
     $options = getopt("h::u::p::d::f::");
     $settings = array();
-    $settings['basis_username'] = (empty(BASIS_USERNAME)) ? '' : BASIS_USERNAME;
-    $settings['basis_password'] = (empty(BASIS_PASSWORD)) ? '' : BASIS_PASSWORD;
+    $settings['basis_username'] = (!defined(BASIS_USERNAME)) ? '' : BASIS_USERNAME;
+    $settings['basis_password'] = (!defined(BASIS_PASSWORD)) ? '' : BASIS_PASSWORD;
     $settings['basis_export_date'] = date('Y-m-d', strtotime('now', time()));
-    $settings['basis_export_format'] = (empty(BASIS_EXPORT_FORMAT)) ? 'json' : BASIS_EXPORT_FORMAT;
+    $settings['basis_export_format'] = (!defined(BASIS_EXPORT_FORMAT)) ? 'json' : BASIS_EXPORT_FORMAT;
 
     while (list($key, $value) = each($options)) {
         if ($key == 'h') {
@@ -149,11 +149,11 @@ function runCommandLine()
 **/
 function runInteractive()
 {
-    $basis_username = (empty(BASIS_USERNAME)) ? '' : BASIS_USERNAME;
-    $basis_password = (empty(BASIS_PASSWORD)) ? '' : BASIS_PASSWORD;
-    $basis_password_mask = (empty(BASIS_PASSWORD)) ? '' : '********';
+    $basis_username = (!defined(BASIS_USERNAME)) ? '' : BASIS_USERNAME;
+    $basis_password = (!defined(BASIS_PASSWORD)) ? '' : BASIS_PASSWORD;
+    $basis_password_mask = (!defined(BASIS_PASSWORD)) ? '' : '********';
     $basis_export_date = date('Y-m-d', strtotime('now', time()));
-    $basis_export_format = (empty(BASIS_EXPORT_FORMAT)) ? 'json' : BASIS_EXPORT_FORMAT;
+    $basis_export_format = (!defined(BASIS_EXPORT_FORMAT)) ? 'json' : BASIS_EXPORT_FORMAT;
     $settings = array();
 
     echo "-------------------------\n";
@@ -193,10 +193,10 @@ function runInteractive()
 **/
 function runHttp()
 {
-    $basis_username = (empty(BASIS_USERNAME)) ? '' : BASIS_USERNAME;
-    $basis_password = (empty(BASIS_PASSWORD)) ? '' : BASIS_PASSWORD;
+    $basis_username = (!defined(BASIS_USERNAME)) ? '' : BASIS_USERNAME;
+    $basis_password = (!defined(BASIS_PASSWORD)) ? '' : BASIS_PASSWORD;
     $basis_export_date = date('Y-m-d', strtotime('now', time()));
-    $basis_export_format = (empty(BASIS_EXPORT_FORMAT)) ? 'json' : BASIS_EXPORT_FORMAT;
+    $basis_export_format = (!defined(BASIS_EXPORT_FORMAT)) ? 'json' : BASIS_EXPORT_FORMAT;
     $settings = array();
 
     $settings['basis_username'] = (empty($_GET['u']) ? $basis_username : strip_tags($_GET['u']));
