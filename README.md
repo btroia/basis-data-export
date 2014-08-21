@@ -50,13 +50,13 @@ That's it! (for now).
 
 ## Data Values
 
-Basis currently returns the following data points. They will represent an average (for heart rate) or sum (steps) over the previous 1-minute period:
+Basis currently returns the following data points. They will represent an average (i.e., for heart rate, GSR, skin/air temperature) or sum (i.e., steps, calories) over the previous 1-minute period:
 
 - Time - time reading was taken
 - Heart Rate - beats per minute
 - Steps - number of steps taken
 - Calories - number of calories burned
-- GSR - Galvanic skin response (i.e., sweat/skin conductivity. Learn more about GSR here - [http://en.wikipedia.org/wiki/Skin_conductance](http://en.wikipedia.org/wiki/Skin_conductance)
+- GSR - Galvanic skin response (i.e., sweat/skin conductivity. Learn more about GSR here - [http://en.wikipedia.org/wiki/Skin_conductance](http://en.wikipedia.org/wiki/Skin_conductance))
 - Skin Temperature - skin temperature (degrees F)
 - Air Temperature - air temperatute (degrees F)
 
@@ -68,5 +68,15 @@ There are some other aggregate metrics included in the reponse such as min/max/a
 
   `curl http://localhost/basis-data-export/basisdataexport.php?date=2013-05-[01-31]`
 
+### Special Tip for Windows Users and Setting Up SSL/cURL
+(Thanks to [@joshuagarity](https://github.com/joshuagarity) for the tip!)
+If you haven't already, you will need to install an SSL certificate on your system in order for the script to work (because the user authentication only works over SSL, and is required by cURL). Here's how:
+
+- Download a certificate file at http://curl.haxx.se/ca/cacert.pem and save it somewhere on your computer
+- Run `update php.ini -- add curl.cainfo = "PATH_TO/cacert.pem"` where `"PATH_TO/cacert.pem"` is the location of the certificate file you just downloaded. If you are running [XAMPP](https://www.apachefriends.org/index.html), you would save the `cacert.pem` to `c:\xampp\cacert.pem`. Then, open XAMPP, click on Config, then selected `PHP.ini`. On the second line of the file paste the following:
+
+  `curl.cainfo = "C:\xampp\cacert.pem"`
+
+- Lastly, save the file and you should be able to run the script.
 
 
