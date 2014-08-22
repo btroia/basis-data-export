@@ -143,7 +143,7 @@ class BasisExport
         }
 
         // Request data from Basis for selected date. Note we're requesting all available data.
-        $dataurl = 'https://app.mybasis.com/api/v1/chart/me?'
+        $activities_url = 'https://app.mybasis.com/api/v1/chart/me?'
                 . 'summary=true'
                 . '&interval=' . $this->export_interval
                 . '&units=ms'
@@ -161,7 +161,7 @@ class BasisExport
         // Initialize the cURL resource and make api request
         $ch = curl_init();
         curl_setopt_array($ch, array(
-            CURLOPT_URL => $dataurl,
+            CURLOPT_URL => $activities_url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_COOKIEFILE => $this->cookie_jar
         ));
@@ -225,8 +225,147 @@ class BasisExport
         }
     }
 
+   /**
+    * Retreive user's sleep data for given date and save to file
+    * @param string $export_date Date in YYYY-MM-DD format
+    * @param string $export_format Export type (json,csv,html)
+    * @return bool
+    * @throws Exception
+    */
+    function getSleep($export_date = '', $export_format = 'json')
+    {
+        // Check for YYYY-MM-DD date format, else throw error
+        if (!isset($export_date)) {
+            // default to yesterday
+            $export_date = date('Y-m-d', strtotime('-1 day', time()));
+        } else {
+            $export_date = preg_replace('/[^-a-zA-Z0-9_]/', '', $export_date);
+        }
+        if (!$this->isValidDate($export_date)) {
+            throw new Exception('ERROR: Invalid date -  ' . $export_date . "\n");
+            return false;
+        }
+
+        // Make sure export format is valid
+        if (!in_array($export_format, $this->export_formats)) {
+            throw new Exception('ERROR: Invalid export format -  ' . $export_format . "\n");
+            return false;
+        }
+
+        // Log into Basis account to authorize access.
+        if (empty($this->access_token)) {
+            try {
+                $this->doLogin();
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+                return false;
+            }
+        }
+
+        // Request sleep data from Basis for selected date. Note we're requesting all available data.
+        $sleep_url = 'https://app.mybasis.com/api/v2/users/me/days/' . $export_date . '/activities?'
+                . 'type=sleep'
+                . '&expand=activities.stages,activities.events';
+
+        // Initialize the cURL resource and make api request
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => $sleep_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_COOKIEFILE => $this->cookie_jar
+        ));
+        $result = curl_exec($ch);
+        $response_code = curl_getinfo ($ch, CURLINFO_HTTP_CODE);
+
+        if ($response_code == '401') {
+            throw new Exception("ERROR: Unauthorized!\n");
+            return false;
+        }
+
+        curl_close($ch);
+
+        // Parse data from JSON response
+        $json = json_decode($result, true);
+
+        // Create an array of sleep activities. Basis breaks up sleep into individual
+        // events if there is an interruption longer than 15 minutes.
+        $sleep = array();
+        $sleep_activities = $json['content']['activities'];
+        foreach ($sleep_activities as $sleep_activity) {
+            // Add sleep event to array
+            $sleep[] = array(
+                'start_time'           => $sleep_activity['start_time']['timestamp'],
+                'end_time'             => $sleep_activity['end_time']['timestamp'],
+                'heart_rate_avg'       => $sleep_activity['heart_rate']['avg'],
+                'heart_rate_min'       => $sleep_activity['heart_rate']['min'],
+                'heart_rate_max'       => $sleep_activity['heart_rate']['max'],
+                'calories'             => $sleep_activity['calories'],
+                'actual_seconds'       => $sleep_activity['actual_seconds'],
+                'light_minutes'        => $sleep_activity['sleep']['light_minutes'],
+                'deep_minutes'         => $sleep_activity['sleep']['deep_minutes'],
+                'rem_minutes'          => $sleep_activity['sleep']['rem_minutes'],
+                'interruption_minutes' => $sleep_activity['sleep']['interruption_minutes'],
+                'unknown_minutes'      => $sleep_activity['sleep']['unknown_minutes'],
+                'interruptions'        => $sleep_activity['sleep']['interruptions'],
+                'toss_and_turn'        => $sleep_activity['sleep']['toss_and_turn'],
+                'events'               => $sleep_activity['events'],
+                'type'                 => $sleep_activity['type'],
+                'id'                   => $sleep_activity['id']
+            );
+        }
+
+        // print_r($sleep);
+
+        if ($export_format == 'html') {
+            // Save results as .html file
+            $file = dirname(__FILE__) . '/data/basis-data-' . $export_date . '-sleep.html';
+            $html = $this->sleepToHTML($json);
+            if (!file_put_contents($file, $html)) {
+                throw new Exception("ERROR: Could not save data to file $file!");
+                return false;
+            }
+
+        } else if ($export_format == 'csv') {
+            // Save results as .csv file
+            $file = dirname(__FILE__) . '/data/basis-data-' . $export_date . '-sleep.csv';
+
+            $fp = fopen($file, 'w');
+            if(!$fp) {
+                throw new Exception("ERROR: Could not save data to file $file!");
+                return false;
+            }
+            fputcsv($fp, array(
+                'start time', 'end time', 'heart rate avg', 'heart rate min', 'heart rate max', 'calories', 'actual secs',
+                'light mins', 'deep mins', 'rem mins', 'interruption mins', 'unknown mins', 'interruptions', 'toss turns')
+            );
+            for ($i=0; $i<count($sleep); $i++) {
+                // HH:MM:SS timestamp
+                $start_time = strftime("%Y-%m-%d %T", $sleep[$i]['start_time']);
+                $end_time = strftime("%Y-%m-%d %T", $sleep[$i]['end_time']);
+                $row = array(
+                    $start_time, $end_time, $sleep[$i]['heart_rate_avg'], $sleep[$i]['heart_rate_min'], $sleep[$i]['heart_rate_max'], 
+                    $sleep[$i]['calories'], $sleep[$i]['actual_seconds'], $sleep[$i]['light_minutes'], $sleep[$i]['deep_minutes'], 
+                    $sleep[$i]['rem_minutes'], $sleep[$i]['interruption_minutes'], $sleep[$i]['unknown_minutes'], 
+                    $sleep[$i]['interruptions'], $sleep[$i]['toss_and_turn']
+                );
+
+                // Add row to csv file
+                fputcsv($fp, $row);
+            }
+            fclose($fp);
+
+        }   else {
+            // Save results as .json file
+            $file = dirname(__FILE__) . '/data/basis-data-' . $export_date . '-sleep.json';
+            if (!file_put_contents($file, $result)) {
+                throw new Exception("ERROR: Could not save data to file $file!");
+                return false;
+            }
+        }
+    }
+
     /**
-    * Utilitiy function to check/echo syste configuration
+    * Utilitiy function to check/echo system configuration
     */
     function testConfig()
     {
@@ -259,7 +398,7 @@ class BasisExport
     }
 
     /**
-    * Generates an HTML summary from json response.
+    * Generates an HTML summary of activity data from json response.
     * Yes, this function is *very* ugly. It's only included for legacy purposes
     * and most likely you would never use this unless you want to open up
     * something nicely formatted in a web browser.
@@ -280,7 +419,7 @@ class BasisExport
 
         $html = <<<HTML
 <html>
-<head><title>My Data</title>
+<head><title>My Activity Data for {$report_date}</title>
 <style>
 body {
 font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
@@ -419,7 +558,7 @@ HTML;
     </table>
     <hr />
 
-    <h3>My Data</h3>
+    <h3>My Activity Data</h3>
     <table id="my-data">
     <thead>
         <tr>
@@ -460,8 +599,119 @@ HTML;
 
     } // end activitiesToHTML
 
+    /**
+    * Generates an HTML summary of sleep data from json response.
+    * Yes, this function is *very* ugly. It's only included for legacy purposes
+    * and most likely you would never use this unless you want to open up
+    * something nicely formatted in a web browser.
+    * @param string $json JSON response from server
+    * @return string Formatted HTML summary
+    */
+    function sleepToHTML($json)
+    {
+        $result = $json;
+        /*
+        $result = $activities_json;
+        $report_date = $activities_json['starttime']; // report date, as UNIX timestamp
+        $heartrates = $activities_json['metrics']['heartrate']['values'];
+        $steps = $activities_json['metrics']['steps']['values'];
+        $calories = $activities_json['metrics']['calories']['values'];
+        $gsrs = $activities_json['metrics']['gsr']['values'];
+        $skintemps = $activities_json['metrics']['skin_temp']['values'];
+        $airtemps = $activities_json['metrics']['air_temp']['values'];
+        $bodystates = $activities_json['bodystates'];
+        */
+
+        $html = <<<HTML
+<html>
+<head><title>My Sleep Data</title>
+<style>
+body {
+font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+font-size: 12px;
+}
+#my-data, #my-data-summary {
+font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+font-size: 12px;
+background: #fff;
+width: 800px;
+border-collapse: collapse;
+text-align: left;
+margin: 20px;
+}
+#my-data th, #my-data-summary th {
+font-size: 14px;
+font-weight: normal;
+color: #039;
+border-bottom: 2px solid #6678b1;
+padding: 10px 8px;
+text-align: center;
+}
+#my-data td, #my-data-summary td {
+border-bottom: 1px solid #ccc;
+color: #669;
+padding: 6px 8px;
+text-align: center;
+}
+</style>
+</head>
+<body>
+    <h3>My Sleep Data</h3>
+    <table id="my-data">
+    <thead>
+        <tr>
+            <th scope="col" id="start-time">Start Time</th>
+            <th scope="col" id="end-time">End Time</th>
+            <th scope="col" id="hr-avg">Heart Rate Avg</th>
+            <th scope="col" id="hr-min">Heart Rate Min</th>
+            <th scope="col" id="hr-max">Heart Rate Max</th>
+            <th scope="col" id="cals">Calories</th>
+            <th scope="col" id="actual-secs">Actual Secs</th>
+            <th scope="col" id="light-mins">Light Mins</th>
+            <th scope="col" id="deep-mins">Deep Mins</th>
+            <th scope="col" id="rem-mins">REM Mins</th>
+            <th scope="col" id="inter-mins">Interruption Mins</th>
+            <th scope="col" id="unknown-mins">Unknown Mins</th>
+            <th scope="col" id="interrupts">Interruptions</th>
+            <th scope="col" id="toss-turns">Toss Turns</th>
+        </tr>
+    </thead>
+    <tbody>
+HTML;
+        $result = $json;
+
+        $sleep = $json['content']['activities'];
+        // Format and echo data to browser
+        for ($i=0; $i<count($sleep); $i++) {
+            $start_time = strftime("%Y-%m-%d %T", $sleep[$i]['start_time']['timestamp']);
+            $end_time = strftime("%Y-%m-%d %T", $sleep[$i]['end_time']['timestamp']);
+            $html .= '<tr>';
+            $html .= '<td>' . $start_time . '</td>';
+            $html .= '<td>' . $end_time . '</td>';
+            $html .= '<td>' . ($sleep[$i]['heart_rate']['avg'] == '' ? '' : $sleep[$i]['heart_rate']['avg']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['heart_rate']['min'] == '' ? '' : $sleep[$i]['heart_rate']['min']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['heart_rate']['max'] == '' ? '' : $sleep[$i]['heart_rate']['max']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['calories'] == '' ? '0' : $sleep[$i]['calories']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['actual_seconds'] == '' ? '0' : $sleep[$i]['actual_seconds']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['sleep']['light_minutes'] == '' ? '0' : $sleep[$i]['sleep']['light_minutes']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['sleep']['deep_minutes'] == '' ? '0' : $sleep[$i]['sleep']['deep_minutes']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['sleep']['rem_minutes'] == '' ? '0' : $sleep[$i]['sleep']['rem_minutes']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['sleep']['interruption_minutes'] == '' ? '0' : $sleep[$i]['sleep']['interruption_minutes']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['sleep']['unknown_minutes'] == '' ? '0' : $sleep[$i]['sleep']['unknown_minutes']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['sleep']['interruptions'] == '' ? '0' : $sleep[$i]['sleep']['interruptions']) . '</td>';
+            $html .= '<td>' . ($sleep[$i]['sleep']['toss_and_turn'] == '' ? '0' : $sleep[$i]['sleep']['toss_and_turn']) . '</td>';
+            $html .= '</tr>';
+        }
+        $html .= <<<HTML
+    </tbody>
+    </table>
+</body>
+</html>
+HTML;
+        return $html;
+
+    } // end sleepToHTML
+
+
 } // end class BasisExport
-
-
-
 ?>

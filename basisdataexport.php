@@ -42,7 +42,7 @@ require_once(dirname(__FILE__) . '/BasisExport.class.php');
 // Settings
 ///////////////////////////////////////////////////////
 
-// Specify your Basis username, password, and export format. Leaving blank 
+// Specify your Basis username, password, and default export format. Leaving blank 
 // will require inputting these values manually each time the script is run.
 define('BASIS_USERNAME', '');
 define('BASIS_PASSWORD', '');
@@ -76,9 +76,16 @@ if (php_sapi_name() == "cli") {
 $basis = new BasisExport($settings['basis_username'], $settings['basis_password']);
 $basis->debug = DEBUG;
 
-// Make API request to Basis
+// Make activities API requests to Basis
 try {
     $basis->getActivities($settings['basis_export_date'], $settings['basis_export_format']);
+} catch (Exception $e) {
+    echo 'Exception: ',  $e->getMessage(), "\n";
+}
+
+// Make sleep API requests to Basis
+try {
+    $basis->getSleep($settings['basis_export_date'], $settings['basis_export_format']);
 } catch (Exception $e) {
     echo 'Exception: ',  $e->getMessage(), "\n";
 }
@@ -152,6 +159,9 @@ function runInteractive()
     $basis_username = (!defined('BASIS_USERNAME')) ? '' : BASIS_USERNAME;
     $basis_password = (!defined('BASIS_PASSWORD')) ? '' : BASIS_PASSWORD;
     $basis_password_mask = (!defined('BASIS_PASSWORD')) ? '' : '********';
+
+//    $basis_password_mask = (!)
+
     $basis_export_date = date('Y-m-d', strtotime('now', time()));
     $basis_export_format = (!defined('BASIS_EXPORT_FORMAT')) ? 'json' : BASIS_EXPORT_FORMAT;
     $settings = array();

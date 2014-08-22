@@ -48,9 +48,9 @@ If the script runs successfully, your data will be saved in the `data/` folder. 
 That's it! (for now).
 
 
-## Data Values
+## Activity Data
 
-Basis currently returns the following data points. They will represent an average (i.e., for heart rate, GSR, skin/air temperature) or sum (i.e., steps, calories) over the previous 1-minute period:
+Basis currently returns the following activity data points. They will represent an average (i.e., for heart rate, GSR, skin/air temperature) or sum (i.e., steps, calories) over the previous 1-minute period:
 
 - Time - time reading was taken
 - Heart Rate - beats per minute
@@ -61,6 +61,23 @@ Basis currently returns the following data points. They will represent an averag
 - Air Temperature - air temperatute (degrees F)
 
 There are some other aggregate metrics included in the reponse such as min/max/average/standard deviation metrics for each set of data.
+
+## Sleep Data
+
+Basis currently returns the following sleep data points:
+
+- Average Heart Rate - beats per minute
+- Minimum Heart Rate - beats per minute (currently this always returns empty)
+- Maximum Heart Rate - beats per minute (currently this always returns empty)
+- Calories
+- Actual Seconds - total sleep time recorded, in seconds
+- Light Minutes - number of minutes in "light sleep" stage
+- Deep Minutes - number of minutes in "deep sleep" stage
+- REM Minutes - number of minutes in "REM sleep" stage
+- Interruption Minutes - number of minutes interrupted (woke up, went to bathroom, etc.)
+- Tosses and Turns - number of tosses and turns that occurred
+
+Sleep data is often broken into multiple segments - Basis treats each sleep activity as a separate 'event' if there is a 15-minute gap in readings (i.e., sensors couldn't detect anything).
 
 ### Tips
 - You can set up a cron to run once per day to automatically grab your previous day's data (assuming you are syncing your device each day)
