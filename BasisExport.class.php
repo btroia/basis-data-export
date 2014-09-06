@@ -207,7 +207,7 @@ class BasisExport
             fputcsv($fp, array('timestamp', 'heartrate', 'steps', 'calories', 'gsr', 'skintemp', 'airtemp'));
             for ($i=0; $i<count($heartrates); $i++) {
                 // HH:MM:SS timestamp
-                $timestamp = strftime("%Y-%m-%d %T", mktime(0, 0, $i*$this->export_interval, date("n", $report_date), date("j", $report_date), date("Y", $report_date)));
+                $timestamp = strftime("%Y-%m-%d %H:%M:%S", mktime(0, 0, $i*$this->export_interval, date("n", $report_date), date("j", $report_date), date("Y", $report_date)));
                 $row = array($timestamp, $heartrates[$i], $steps[$i], $calories[$i], $gsrs[$i], $skintemps[$i], $airtemps[$i]);
 
                 // Add row to csv file
@@ -340,8 +340,8 @@ class BasisExport
             );
             for ($i=0; $i<count($sleep); $i++) {
                 // HH:MM:SS timestamp
-                $start_time = strftime("%Y-%m-%d %T", $sleep[$i]['start_time']);
-                $end_time = strftime("%Y-%m-%d %T", $sleep[$i]['end_time']);
+                $start_time = strftime("%Y-%m-%d %H:%M:%S", $sleep[$i]['start_time']);
+                $end_time = strftime("%Y-%m-%d %H:%M:%S", $sleep[$i]['end_time']);
                 $row = array(
                     $start_time, $end_time, $sleep[$i]['heart_rate_avg'], $sleep[$i]['heart_rate_min'], $sleep[$i]['heart_rate_max'], 
                     $sleep[$i]['calories'], $sleep[$i]['actual_seconds'], $sleep[$i]['light_minutes'], $sleep[$i]['deep_minutes'], 
@@ -549,8 +549,8 @@ text-align: center;
     <tbody>
 HTML;
         for ($i=0; $i< count($bodystates); $i++) {
-            $html .= '<tr><td>' . strftime("%Y-%m-%d %T", $bodystates[$i][0]) . '</td>';
-            $html .= '<td>' . strftime("%Y-%m-%d %T", $bodystates[$i][1]) . '</td>';
+            $html .= '<tr><td>' . strftime("%Y-%m-%d %H:%M:%S", $bodystates[$i][0]) . '</td>';
+            $html .= '<td>' . strftime("%Y-%m-%d %H:%M:%S", $bodystates[$i][1]) . '</td>';
             $html .='<td>' . $bodystates[$i][2] . '</td></tr>';
         }
         $html .= <<<HTML
@@ -577,7 +577,7 @@ HTML;
         // Format and echo data to browser
         for ($i=0; $i<count($heartrates); $i++) {
             // HH:MM:SS timestamp
-            $timestamp = strftime("%Y-%m-%d %T", mktime(0, 0, $i*$this->export_interval, date("n", $report_date), date("j", $report_date), date("Y", $report_date)));
+            $timestamp = strftime("%Y-%m-%d %H:%M:%S", mktime(0, 0, $i*$this->export_interval, date("n", $report_date), date("j", $report_date), date("Y", $report_date)));
 
             $html .= '<tr>';
             $html .= '<td>' . $timestamp . '</td>';
@@ -683,8 +683,8 @@ HTML;
         $sleep = $json['content']['activities'];
         // Format and echo data to browser
         for ($i=0; $i<count($sleep); $i++) {
-            $start_time = strftime("%Y-%m-%d %T", $sleep[$i]['start_time']['timestamp']);
-            $end_time = strftime("%Y-%m-%d %T", $sleep[$i]['end_time']['timestamp']);
+            $start_time = strftime("%Y-%m-%d %H:%M:%S", $sleep[$i]['start_time']['timestamp']);
+            $end_time = strftime("%Y-%m-%d %H:%M:%S", $sleep[$i]['end_time']['timestamp']);
             $html .= '<tr>';
             $html .= '<td>' . $start_time . '</td>';
             $html .= '<td>' . $end_time . '</td>';
