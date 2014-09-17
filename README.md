@@ -48,9 +48,9 @@ If the script runs successfully, your data will be saved in the `data/` folder. 
 That's it! (for now).
 
 
-## Activity Data
+## Biometric Data
 
-Basis currently returns the following activity data points. They will represent an average (i.e., for heart rate, GSR, skin/air temperature) or sum (i.e., steps, calories) over the previous 1-minute period:
+Basis currently returns the following biometric data points. They each represent an average (i.e., for heart rate, GSR, skin/air temperature) or sum (i.e., steps, calories) over the previous 1-minute period:
 
 - Time - time reading was taken
 - Heart Rate - beats per minute
@@ -64,20 +64,57 @@ There are some other aggregate metrics included in the reponse such as min/max/a
 
 ## Sleep Data
 
-Basis currently returns the following sleep data points:
+Basis currently returns the following sleep data points (it's in a different format than the metrics data because it's a newer version of their API):
 
-- Average Heart Rate - beats per minute
-- Minimum Heart Rate - beats per minute (currently this always returns empty)
-- Maximum Heart Rate - beats per minute (currently this always returns empty)
-- Calories
-- Actual Seconds - total sleep time recorded, in seconds
+- Start Time - local timestamp in MM/DD/YY HH:MM format
+- Start Time ISO - user timestamp in ISO format
+- Start Time Time Zone - user time zone, i.e., America/New_York
+- Start Time Offset - minutes offset from GMT (i.e., -240 for America/New_York)
+- End Time - user timestamp in MM/DD/YY HH:MM format
+- End Time ISO - user timestamp in ISO format
+- End Time Time Zone - user time zone, i.e., America/New_York
+- End Time Offset - minutes offset from GMT (i.e., -240 for America/New_York)
 - Light Minutes - number of minutes in "light sleep" stage
 - Deep Minutes - number of minutes in "deep sleep" stage
 - REM Minutes - number of minutes in "REM sleep" stage
-- Interruption Minutes - number of minutes interrupted (woke up, went to bathroom, etc.)
+- Interruption Minutes - number of minutes interrupted (i.e., woke up, went to bathroom, etc.)
+- Unknown Minutes - number of minutes unknown (i.e., device wasn't able to take readings)
 - Tosses and Turns - number of tosses and turns that occurred
+- Type - always returns 'sleep'
+- Actual Seconds - total sleep time recorded, in seconds
+- Calories - number of calories burned
+- Average Heart Rate - beats per minute
+- Minimum Heart Rate - beats per minute (currently this always returns null)
+- Maximum Heart Rate - beats per minute (currently this always returns null)
+- State - returns 'complete' if event was completed at time of export
+- Version - API version used (i.e., 2)
+- ID - internal id for given sleep event
 
 Sleep data is often broken into multiple segments - Basis treats each sleep activity as a separate 'event' if there is a 15-minute gap in readings (i.e., sensors couldn't detect anything).
+
+## Activity Data
+
+Similar to sleep data, Basis currently returns the following activity data points (walking, biking, running):
+
+- Start Time - local timestamp in MM/DD/YY HH:MM format
+- Start Time ISO - user timestamp in ISO format
+- Start Time Time Zone - user time zone, i.e., America/New_York
+- Start Time Offset - minutes offset from GMT (i.e., -240 for America/New_York)
+- End Time - user timestamp in MM/DD/YY HH:MM format
+- End Time ISO - user timestamp in ISO format
+- End Time Time Zone - user time zone, i.e., America/New_York
+- End Time Offset - minutes offset from GMT (i.e., -240 for America/New_York)
+- Type - activity type (i.e., walk, run, bike)
+- Actual Seconds - total activity time, in seconds
+- Steps - number of steps taken
+- Calories - number of calories burned
+- Minutes - actual number of minutes activity was performed (excludes time not moving?)
+- Average Heart Rate - beats per minute (currently this always returns null)
+- Minimum Heart Rate - beats per minute (currently this always returns null)
+- Maximum Heart Rate - beats per minute (currently this always returns null)
+- State - returns 'complete' if event was completed at time of export
+- Version - API version used (i.e., 2)
+- ID - internal id for given sleep event
 
 ### Tips
 - You can set up a cron to run once per day to automatically grab your previous day's data (assuming you are syncing your device each day)

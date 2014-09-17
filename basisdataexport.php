@@ -76,19 +76,27 @@ if (php_sapi_name() == "cli") {
 $basis = new BasisExport($settings['basis_username'], $settings['basis_password']);
 $basis->debug = DEBUG;
 
-// Make activities API requests to Basis
+// Query Basis API for biometric data
+try {
+    $basis->getMetrics($settings['basis_export_date'], $settings['basis_export_format']);
+} catch (Exception $e) {
+    echo 'Exception: ',  $e->getMessage(), "\n";
+}
+
+// Query Basis API for sleep data
+try {
+    $basis->getSleep($settings['basis_export_date'], $settings['basis_export_format']);
+} catch (Exception $e) {
+    echo 'Exception: ',  $e->getMessage(), "\n";
+}
+
+// Query Basis API for activity data
 try {
     $basis->getActivities($settings['basis_export_date'], $settings['basis_export_format']);
 } catch (Exception $e) {
     echo 'Exception: ',  $e->getMessage(), "\n";
 }
 
-// Make sleep API requests to Basis
-try {
-    $basis->getSleep($settings['basis_export_date'], $settings['basis_export_format']);
-} catch (Exception $e) {
-    echo 'Exception: ',  $e->getMessage(), "\n";
-}
 
 /**
 * Take parameters via command-line args
@@ -116,7 +124,7 @@ function runCommandLine()
             echo "-f  Data export format (json|csv|html)\n";
             echo "-h  Show this help text\n";
             echo "-------------------------\n";
-            return;
+            exit();
         }
         if ($key == 'u') {
             if (empty($value)) {
