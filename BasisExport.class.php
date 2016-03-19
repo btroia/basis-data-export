@@ -8,6 +8,7 @@
  *
  * @author Bob Troia <bob@quantifiedbob.com>
  * @link   http://www.quantifiedbob.com
+ * @license MIT License (see LICENSE.md)
  *
 */
 
@@ -20,8 +21,9 @@ class BasisExport
     // Enable/disable debugging
     public $debug = false;
 
-    // Access token
+    // Access token and refresh token
     private $access_token;
+    private $refresh_token;
 
     // Data export date
     public $export_date;
@@ -41,7 +43,7 @@ class BasisExport
         $this->username = $username;
         $this->password = $password;
 
-        // Location to store cURL's CURLOPT_COOKIEJAR (for access_token cookie)
+        // Location to store cURL's CURLOPT_COOKIEJAR (for access_token and refresh_token cookies)
         $this->cookie_jar = dirname(__FILE__) . '/cookie.txt';
     }
 
@@ -81,27 +83,41 @@ class BasisExport
             throw new Exception('ERROR: cURL error - ' . curl_error($ch) . "\n");
             return false;
         }
-
         curl_close($ch);
 
-        // Make sure login was successful and save access_token cookie for api requests.
-        preg_match('/^Set-Cookie:\s*([^;]*)/mi', $result, $m);
-        if (empty($m)) {
+        // Make sure login was successful then save access_token and refresh_token cookies
+        // for api requests. Basis returns the following cookie headers:
+        //
+        // Set-Cookie: scope=login; Domain=.mybasis.com; Expires=Sun, 01-Jan-2040 00:00:00 GMT; Secure; Path=/
+        // Set-Cookie: access_token=[ACCESS TOKEN STRING]; Domain=.mybasis.com; Expires=Sun, 01-Jan-2040 00:00:00 GMT; Secure; Path=/
+        // Set-Cookie: refresh_token=[REFRESH TOKEN STRING]; Domain=.mybasis.com; Expires=Sun, 01-Jan-2040 00:00:00 GMT; Secure; Path=/
+
+        // Regular expression used to parse cookies
+        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $result, $matches);
+
+        if (empty($matches)) {
             throw new Exception('ERROR: Unable to login! Check your username and password.');
             return false;
         } else {
-            parse_str($m[1], $cookies);
-            if (empty($cookies['access_token'])) {
+            // extract access_token and refresh_token cookies and set to variables
+            parse_str($matches[1][1], $access_token_cookie);
+            parse_str($matches[1][2], $refresh_token_cookie);
+
+            if (empty($access_token_cookie['access_token'])) {
                 throw new Exception('ERROR: Unable to get an access token!');
                 return false;
+            } elseif (empty($refresh_token_cookie['refresh_token'])) {
+                throw new Exception('ERROR: Unable to get a refresh token!');
+                return false;
             } else {
-                $this->access_token = $cookies['access_token'];
+                $this->access_token = (string)$access_token_cookie['access_token'];
+                $this->refresh_token = (string)$refresh_token_cookie['refresh_token'];
                 if ($this->debug) {
                     echo 'access_token cookie: ' . $this->access_token . "\n";
+                    echo 'refresh_token cookie: ' . $this->refresh_token . "\n";
                 }
             }
         }
-
     } // doLogin()
 
     /**
@@ -132,7 +148,7 @@ class BasisExport
         }
 
         // Log into Basis account to authorize access.
-        if (empty($this->access_token)) {
+        if (empty($this->access_token) || empty($this->refresh_token)) {
             try {
                 $this->doLogin();
             } catch (Exception $e) {
