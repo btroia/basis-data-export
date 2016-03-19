@@ -120,7 +120,7 @@ Similar to sleep data, Basis currently returns the following activity data point
 - You can set up a cron to run once per day to automatically grab your previous day's data (assuming you are syncing your device each day)
 - If you want to archive data across a date range you can use curl's [ ] syntax to do it easily (thanks to [@Edrabbit](http://twitter.com/edrabbit) for the tip!). For example, to get all of May cached in /data:
 
-  `curl http://localhost/basis-data-export/basisdataexport.php?date=2013-05-[01-31]`
+  `curl http://localhost/basis-data-export/basisdataexport.php?d=2013-05-[01-31]`
 
 ### Special Tip for Windows Users and Setting Up SSL/cURL
 (Thanks to [@joshuagarity](https://github.com/joshuagarity) for the tip!)
