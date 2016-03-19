@@ -49,7 +49,7 @@ define('BASIS_PASSWORD', '');
 define('BASIS_EXPORT_FORMAT', 'json');
 
 // Enable/disable debug mode
-define('DEBUG', true);
+define('DEBUG', false);
 
 ///////////////////////////////////////////////////////
 // You shouldn't need to edit anything below this line!
