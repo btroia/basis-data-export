@@ -3,6 +3,10 @@
 Utility that exports and saves your Basis B1 device's uploaded sensor data.
 You can learn more about Basis at [http://www.mybasis.com/](http://www.mybasis.com/)
 
+> UPDATE AUGUST 3, 2016 -
+
+> Intel (who acquired Basis) has notified users that they will be discontinuing all Basis devices and services on December 31, 2016. Make sure to download all of your data before then! See [http://www.mybasis.com/safety/](http://www.mybasis.com/safety/) to learn more.
+
 ## Instructions
 
 In order to use this script, you must already have a Basis account (and a Basis B1 band).
