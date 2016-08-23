@@ -14,11 +14,33 @@ In order to use this script, you must already have a Basis account (and a Basis 
 ### Usage:
 This script can be run several ways. You can (and should probably) first edit the `BASIS_USERNAME`, `BASIS_PASSWORD`, and `BASIS_EXPORT_FORMAT` values under "Settings" in the file `basisdataexport.php` so you don't have to specify those values every time the script is run. Make sure the `data/` folder is writable!
 
-![basis export config](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-config.png)
+```php
+///////////////////////////////////////////////////////
+// Settings
+///////////////////////////////////////////////////////
+
+// Specify your Basis username, password, and default export format. Leaving blank 
+// will require inputting these values manually each time the script is run.
+define('BASIS_USERNAME', '[YOUR BASIS USERNAME]');
+define('BASIS_PASSWORD', '[YOUR BASIS PASSWORD');
+define('BASIS_EXPORT_FORMAT', 'json');
+
+// Enable/disable debug mode
+define('DEBUG', false);
+```
 
 ### Method 1 - Interactive Mode
 
-![basis export option 1](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-1.png)
+```
+$ php basisdataexport.php
+-------------------------
+Basis data export script.
+-------------------------
+Enter Basis username [me@somewhere.com]: me@somewhere.com
+Enter Basis password [********]: 
+Enter data export date (YYYY-MM-DD) [2016-08-22] : 
+Enter export format (json|csv|html) [json] : 
+```
 
 1. Open a terminal window and cd to this script's directory
 2. Type `php basisdataexport.php`
@@ -28,7 +50,9 @@ This script can be run several ways. You can (and should probably) first edit th
 
 ### Method 2 - Via command-line arguments (useful for crons)
 
-![basis export option 2](http://www.quantifiedbob.com/images/basis-screenshots/basis-export-screenshot-2.png)
+```
+$ php basisdataexport.php -ume@somewhere.com -pMyBasisPassword -d2016-08-22 -fcsv
+```
 
 Usage `php basisdataexport.php -h -u[username] -p[pass] -d[YYYY-MM-DD] -f[json|csv|html]`
 ```
