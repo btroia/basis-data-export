@@ -1,6 +1,6 @@
 # Basis Data Export
 
-Utility that exports and saves your Basis B1 device's uploaded sensor data.
+Utility that exports and saves your Basis Health Tracker (B1/Peak) uploaded sensor data, as described at [https://www.quantifiedbob.com/2013/04/liberating-your-data-from-the-basis-b1-band/](https://www.quantifiedbob.com/2013/04/liberating-your-data-from-the-basis-b1-band/)
 You can learn more about Basis at [http://www.mybasis.com/](http://www.mybasis.com/)
 
 > UPDATE AUGUST 3, 2016 -
