@@ -9,9 +9,9 @@
  * @author Bob Troia <bob@quantifiedbob.com>
  * @link   http://www.quantifiedbob.com
  * @license MIT License (see LICENSE.md)
- * 
+ *
  * Usage:
- * This script can be run several ways. You can edit the BASIS_USERNAME, BASIS_PASSWORD, 
+ * This script can be run several ways. You can edit the BASIS_USERNAME, BASIS_PASSWORD,
  * and BASIS_EXPORT_FORMAT values under "Settings" below so you don't have to specify
  * them every time the script is run. Make sure the data/ folder is writeable!
  *
@@ -20,7 +20,7 @@
  *   b. Type php basisdataexport.php
  *   c. Follow the prompts (hit ENTER to use default values)
  *   d. Your data will be save to /data/basis-data-[YYYY-MM-DD].[format]';
- *   
+ *
  * [Method 2] Via command-line arguments (useful for crons)
  *   php basisdataexport.php -h -u[username] -p[pass] -d[YYYY-MM-DD] -f[json|csv|html]
  *
@@ -30,17 +30,19 @@
  *   -d  Data export date (YYYY-MM-DD) (if not used, defaults to current date)
  *   -f  Data export format (json|csv|html) (if not used, defaults to json)
  *   -h  Show this help text
- * 
- * [Method 3] Via web browser 
+ *
+ * [Method 3] Via web browser
  *   This assumes your script is in a location that is executable via a web server,
  *   i.e., http://localhost/basis-data-export/basisdataexport.php?u=[basis_username]&p=[basis_password]&d=[YYYY-MM-DD]&f=[format]
  *
 */
-require_once(dirname(__FILE__) . '/BasisExport.class.php'); 
+require_once(dirname(__FILE__) . '/BasisExport.class.php');
 
 ///////////////////////////////////////////////////////
 // Settings
 ///////////////////////////////////////////////////////
+// Specify time-zone
+date_default_timezone_set('America/New_York');
 
 // Specify your Basis username, password, and default export format. Leaving blank 
 // will require inputting these values manually each time the script is run.
