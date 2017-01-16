@@ -3,6 +3,10 @@
 Utility that exports and saves your Basis Health Tracker (B1/Peak) uploaded sensor data, as described at [https://www.quantifiedbob.com/2013/04/liberating-your-data-from-the-basis-b1-band/](https://www.quantifiedbob.com/2013/04/liberating-your-data-from-the-basis-b1-band/)
 You can learn more about Basis at [http://www.mybasis.com/](http://www.mybasis.com/)
 
+> UPDATE JANUARY 1, 2017 -
+
+> RIP Basis - Intel has officially shut down Basis, including access to any historical data (users had until December 31, 2016 to export data).
+
 > UPDATE AUGUST 3, 2016 -
 
 > Intel (who acquired Basis) has notified users that they will be discontinuing all Basis devices and services on December 31, 2016. Make sure to download all of your data before then! See [http://www.mybasis.com/safety/](http://www.mybasis.com/safety/) to learn more.
